@@ -28,16 +28,16 @@ class Menu:
         # TODO: what if menu fetching fails?
         temp_menu = {'Breakfast': dict(), 'Lunch': dict(), 'Dinner': dict()}
 
-        temp_menu['Breakfast'] = menu('The Anteatery', 'Breakfast', self.today)
-        temp_menu['Lunch'] = menu('The Anteatery', 'Lunch', self.today)
-        temp_menu['Dinner'] = menu('The Anteatery', 'Dinner', self.today)
+        temp_menu['Breakfast'] = _menu('The Anteatery', 'Breakfast', self.today)
+        temp_menu['Lunch'] = _menu('The Anteatery', 'Lunch', self.today)
+        temp_menu['Dinner'] = _menu('The Anteatery', 'Dinner', self.today)
         self.anteatery = temp_menu
 
-        self.brandywine['Breakfast'] = menu('Brandywine', 'Breakfast', self.today)
-        self.brandywine['Lunch'] = menu('Brandywine', 'Lunch', self.today)
-        self.brandywine['Dinner'] = menu('Brandywine', 'Dinner', self.today)
+        self.brandywine['Breakfast'] = _menu('Brandywine', 'Breakfast', self.today)
+        self.brandywine['Lunch'] = _menu('Brandywine', 'Lunch', self.today)
+        self.brandywine['Dinner'] = _menu('Brandywine', 'Dinner', self.today)
 
 
-def menu(location, period='Lunch', menu_date=date.today().strftime('%m/%d/%Y')):
+def _menu(location, period='Lunch', menu_date=date.today().strftime('%m/%d/%Y')):
     return parse_menu(
         get_menu_from_campusdish_api(LOCATIONS[location], menu_date, PERIODS[period]))
