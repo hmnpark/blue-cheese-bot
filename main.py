@@ -1,90 +1,64 @@
-import discord
-from Menu.menu import Menu
-# from discord.ext import tasks
-import datetime
+#from campusdish_scraper import get_menu_from_scraping
+#from campusdish_scraper import BRANDY_URL, ANTEATERY_URL
+from .campusdish_api import get_menu_from_campusdish_api
+from .mappings import LOCATIONS, PERIODS
+from .parse import parse_menu
+from datetime import date
 
-intents = discord.Intents.default()
-intents.messages = True
-intents.message_content = True
-client = discord.Client(intents=intents)
-MENU = Menu()
+from discord_webhook import DiscordWebhook, DiscordEmbed
 
+def sendMessageWebhook(title, description, url, color='F70D1A'):
+        webhook = DiscordWebhook(url=url, username="blue cheese?")
 
-@client.event
-async def on_ready():
-    print(f'We have logged in as {client.user}')
+        embed = DiscordEmbed(
+                        title=title, description=description, color=color, rate_limit_retry=True
+                )
 
-
-@client.event
-async def on_message(message):
-    uname = str(message.author)
-    u_msg = message.content
-    channel = str(message.channel)
-    #print(f'{uname} said: "{u_msg}" ({channel})')
-    if message.author == client.user:
-         return
-
-    if message.content.lower() == 'ping':
-        await message.channel.send('pong')
-    elif message.content.lower() == '?kill':
-        exit()
-    elif message.content.lower() == '?refresh':
-        MENU.update_menu()
-        await message.channel.send('Update completed')
-    elif message.content.lower() == '?frefresh':
-        MENU.force_update_menu()
-        await message.channel.send('Force update completed')
-    elif message.content.lower() == '?menu':
-        msg = f'{MENU.today}\n__Brandywine__\n'
-        for k,v in MENU.brandywine.get('Lunch').items():
-            if k == 'The Farm Stand/ Salad Bar' or k == "Farmer's Market":
-                continue
-            msg += f'***{k}***\n'
-            for item in v:
-                msg += '\t' + item + '\n'
-            msg += '\n'
-        msg += '\n'
-        await message.channel.send(msg)
-        msg = f'__Anteatery__\n'
-        for k,v in MENU.anteatery.get('Lunch').items():
-            if k == 'The Farm Stand/ Salad Bar' or k == "Farmer's Market":
-                continue
-            msg += f'***{k}***\n'
-            for item in v:
-                msg += '\t' + item + '\n'
-            msg += '\n'
-        await message.channel.send(msg)
+        webhook.add_embed(embed)
+        webhook.execute()
 
 
+def get_brandy_ant_lunch():
+    today = date.today().strftime('%m/%d/%Y')
+    brandy_menu = parse_menu(get_menu_from_campusdish_api(LOCATIONS['Brandywine'], today, PERIODS['Lunch']))
+    description = ''
+    description += 'BRANDYWINE\n'
+    for k,v in brandy_menu.items():
+        if k == 'The Farm Stand/ Salad Bar':
+            continue
+        description += f'**{k}**\n'
+        for item in v:
+            description += f'\t{item}\n'
+        description += '\n'
 
-# @client.event
-# async def end_bot(message):
-#     if message.author == client.user:
-#         return
+    description += '\n'
+    ant_menu = parse_menu(get_menu_from_campusdish_api(LOCATIONS['The Anteatery'], today, PERIODS['Lunch']))
+    description += 'ANTEATERY\n'
+    for k,v in ant_menu.items():
+        if k == "Farmer's Market":
+            continue
+        description += f'**{k}**\n'
+        for item in v:
+            description += f'\t{item}\n'
+        description += '\n'
+    return description
 
-#     if message.content.startswith('end'):
-#         await message.channel.send('byebye')
+if __name__ == '__main__':
+    today = date.today().strftime('%m/%d/%Y')
+    # #brandy_menu = get_menu(path=Path('brandy.txt'))
 
+    webhook_url = 'https://discord.com/api/webhooks/1028220478952853514/oikPn5gj4-1FyoBGfL28NO_K-DKo_EQmm3msMKY1ETs865JH-bP00siNhct8Kbdzd7yZ'
+    sendMessageWebhook('Food!', get_brandy_ant(), webhook_url)
 
-# @tasks.loop(time=datetime.time(hour=19))
-# async def test_task():
-#     channel = client.get_channel(1028220387454107658)
-#     await channel.send("it's 12pm pst maybe")
+    print(description)
 
+# https://uci.campusdish.com/api/menu/GetMenus?locationId=3314&storeIds=&mode=Daily&date=10/06/2022&time=&periodId=49&fulfillmentMethod=
+# https://uci.campusdish.com/api/menu/GetMenus?locationId=3314&storeIds=&mode=Daily&date=10/06/2022&time=&periodId=106&fulfillmentMethod=
+# https://uci.campusdish.com/api/menu/GetMenus?locationId=3314&storeIds=&mode=Daily&date=10/06/2022&time=&periodId=107&fulfillmentMethod=
+# https://uci.campusdish.com/api/menu/GetMenus?locationId=3314&storeIds=&mode=Daily&date=10/06/2022&time=&periodId=108&fulfillmentMethod=
 
-# @client.event
-# async def on_message(message):
-#     if message.author == client.user:
-#         return
-#     await message.add_reaction('👎')
+# https://uci.campusdish.com/api/menu/GetMenus?locationId=3056&storeIds=&mode=Daily&date=10/07/2022&time=&periodId=49&fulfillmentMethod=
+# https://uci.campusdish.com/api/menu/GetMenus?locationId=3056&storeIds=&mode=Daily&date=10/07/2022&time=&periodId=106&fulfillmentMethod=
+# https://uci.campusdish.com/api/menu/GetMenus?locationId=3056&storeIds=&mode=Daily&date=10/07/2022&time=&periodId=107&fulfillmentMethod=
 
-# @client.event
-# async def on_message2(message):
-#     if message.author == client.user:
-#         return
-#     await message.add_reaction('👍')
-
-
-with open('token.txt') as fp:
-    TOKEN = fp.read()
-client.run(TOKEN)
+# nono list: blue cheese, olive salad
