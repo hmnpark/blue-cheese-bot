@@ -7,8 +7,8 @@ from datetime import date
 class Menu:
     def __init__(self):
         self.today = date.today().strftime('%m/%d/%Y')
-        self.brandywine = {'Breakfast': dict(), 'Lunch': dict(), 'Dinner': dict()}
-        self.anteatery = {'Breakfast': dict(), 'Lunch': dict(), 'Dinner': dict()}
+        self.brandywine = {'name': 'Brandywine', 'Breakfast': dict(), 'Lunch': dict(), 'Dinner': dict()}
+        self.anteatery = {'name': 'The Anteatery', 'Breakfast': dict(), 'Lunch': dict(), 'Dinner': dict()}
         self._fetch_menus()
 
     def update_menu(self):
@@ -31,11 +31,13 @@ class Menu:
         temp_menu['Breakfast'] = _menu('The Anteatery', 'Breakfast', self.today)
         temp_menu['Lunch'] = _menu('The Anteatery', 'Lunch', self.today)
         temp_menu['Dinner'] = _menu('The Anteatery', 'Dinner', self.today)
+        temp_menu['name'] = 'The Anteatery'
         self.anteatery = temp_menu
 
         self.brandywine['Breakfast'] = _menu('Brandywine', 'Breakfast', self.today)
         self.brandywine['Lunch'] = _menu('Brandywine', 'Lunch', self.today)
         self.brandywine['Dinner'] = _menu('Brandywine', 'Dinner', self.today)
+        self.brandywine['name'] = 'Brandywine'
 
 
 def _menu(location, period='Lunch', menu_date=date.today().strftime('%m/%d/%Y')):
