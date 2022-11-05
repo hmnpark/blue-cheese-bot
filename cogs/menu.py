@@ -26,7 +26,7 @@ def _make_embed(menu, period, date, exclusions):
     return embed
 
 
-class MenuCog(commands.Cog):
+class MenuCog(commands.Cog, name='Menu'):
     def __init__(self, bot):
         self.bot = bot
         self.menu = Menu()
@@ -49,14 +49,17 @@ class MenuCog(commands.Cog):
 
     @commands.command(name='breakfast')
     async def _breakfast(self, ctx, *args):
+        """Gets the breakfast menu for today"""
         await self._post_menu(ctx, args, 'Breakfast')
 
     @commands.command(name='lunch')
     async def _lunch(self, ctx, *args):
+        """Gets the lunch menu for today"""
         await self._post_menu(ctx, args, 'Lunch')
 
     @commands.command(name='dinner')
     async def _dinner(self, ctx, *args):
+        """Gets the dinner menu for today"""
         await self._post_menu(ctx, args, 'Dinner')
 
     @commands.command(name='refresh')
