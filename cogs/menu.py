@@ -13,20 +13,6 @@ COLORS = {
 REFRESH_TIME = 8
 
 
-def _make_embed(menu: dict, period: str, date: str, exclusions: set) -> discord.Embed:
-    """Get the menu as an embed"""
-    embed = discord.Embed(title=f'{menu.get("name")}',
-                            description=f'{period} {date}',
-                            color=COLORS[period])
-    for k in menu.get(period):
-        if k not in exclusions:
-            embed.add_field(
-                name=k,
-                value=''.join([f'> • {food}\n' for food in menu.get(period).get(k)]),
-                inline=True)
-    return embed
-
-
 class MenuCog(commands.Cog, name='Menu'):
     def __init__(self, bot):
         self.bot = bot
@@ -71,6 +57,20 @@ class MenuCog(commands.Cog, name='Menu'):
         await ctx.send(embed=embed)
         embed = _make_embed(self.menu.anteatery, period, self.menu.today, exclusions)
         await ctx.send(embed=embed)
+
+
+def _make_embed(menu: dict, period: str, date: str, exclusions: set) -> discord.Embed:
+    """Get the menu as an embed"""
+    embed = discord.Embed(title=f'{menu.get("name")}',
+                            description=f'{period} {date}',
+                            color=COLORS[period])
+    for k in menu.get(period):
+        if k not in exclusions:
+            embed.add_field(
+                name=k,
+                value=''.join([f'> • {food}\n' for food in menu.get(period).get(k)]),
+                inline=True)
+    return embed
 
 
 async def setup(bot):
