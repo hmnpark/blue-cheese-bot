@@ -2,14 +2,6 @@ import discord
 from discord.ext import commands
 
 
-# def is_privileged():
-#     def predicate(interaction: discord.Interaction) -> bool:
-#         return interaction.user.id == 135960976863264770
-#     return app_commands.check(predicate)
-
-
-
-
 class OwnerCog(commands.Cog, name='Owner'):
     def __init__(self, bot):
         self.bot = bot
