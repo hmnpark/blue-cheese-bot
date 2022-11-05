@@ -35,44 +35,29 @@ class MenuCog(commands.Cog):
         if self.menu.today != date.today().strftime('%m/%d/%Y') and date.now().hour >= REFRESH_TIME:
             self.menu.force_update_menu()
 
-    @commands.command(name='breakfast')
-    async def _breakfast(self, ctx, *args):
+    async def _post_menu(self, ctx, args, period):
         self._menu_check()
         if len(args) > 0 and args[0] == 'all':
             exclusions = set()
         else:
             exclusions = EXCLUSIONS
 
-        embed = _make_embed(self.menu.brandywine, 'Breakfast', self.menu.today, exclusions)
+        embed = _make_embed(self.menu.brandywine, period, self.menu.today, exclusions)
         await ctx.send(embed=embed)
-        embed = _make_embed(self.menu.anteatery, 'Breakfast', self.menu.today, exclusions)
+        embed = _make_embed(self.menu.anteatery, period, self.menu.today, exclusions)
         await ctx.send(embed=embed)
+
+    @commands.command(name='breakfast')
+    async def _breakfast(self, ctx, *args):
+        await self._post_menu(ctx, args, 'Breakfast')
 
     @commands.command(name='lunch')
     async def _lunch(self, ctx, *args):
-        self._menu_check()
-        if len(args) > 0 and args[0] == 'all':
-            exclusions = set()
-        else:
-            exclusions = EXCLUSIONS
-
-        embed = _make_embed(self.menu.brandywine, 'Lunch', self.menu.today, exclusions)
-        await ctx.send(embed=embed)
-        embed = _make_embed(self.menu.anteatery, 'Lunch', self.menu.today, exclusions)
-        await ctx.send(embed=embed)
+        await self._post_menu(ctx, args, 'Lunch')
 
     @commands.command(name='dinner')
     async def _dinner(self, ctx, *args):
-        self._menu_check()
-        if len(args) > 0 and args[0] == 'all':
-            exclusions = set()
-        else:
-            exclusions = EXCLUSIONS
-
-        embed = _make_embed(self.menu.brandywine, 'Dinner', self.menu.today, exclusions)
-        await ctx.send(embed=embed)
-        embed = _make_embed(self.menu.anteatery, 'Dinner', self.menu.today, exclusions)
-        await ctx.send(embed=embed)
+        await self._post_menu(ctx, args, 'Dinner')
 
     @commands.command(name='refresh')
     @commands.is_owner()
