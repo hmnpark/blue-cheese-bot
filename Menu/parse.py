@@ -10,6 +10,9 @@ def parse_menu(unprocessed_menu: dict) -> dict:
     :param dict unprocessed_menu: dict of api call
     :return dict: mapping of stations to the foods they have
     """
+    if unprocessed_menu == None:
+        return None
+
     unprocessed_foods = unprocessed_menu['Menu']['MenuProducts']
     menu = defaultdict(list)
     for food in unprocessed_foods:

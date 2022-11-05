@@ -24,21 +24,15 @@ class Menu:
         self.today = date.today().strftime('%m/%d/%Y')
         self._fetch_menus()
 
+    def _fetch_from(self, menu: dict, name: str):
+        for period in ['Breakfast', 'Lunch', 'Dinner']:
+            menu[period] = _menu(name, period, self.today)
+            if menu[period] == None:
+                menu[period] = {'Uh oh!': ['Something went wrong']}
+
     def _fetch_menus(self):
-        # TODO: what if menu fetching fails?
-        temp_menu = {'Breakfast': dict(), 'Lunch': dict(), 'Dinner': dict()}
-
-        temp_menu['Breakfast'] = _menu('The Anteatery', 'Breakfast', self.today)
-        temp_menu['Lunch'] = _menu('The Anteatery', 'Lunch', self.today)
-        temp_menu['Dinner'] = _menu('The Anteatery', 'Dinner', self.today)
-        temp_menu['name'] = 'The Anteatery'
-        self.anteatery = temp_menu
-
-        self.brandywine['Breakfast'] = _menu('Brandywine', 'Breakfast', self.today)
-        self.brandywine['Lunch'] = _menu('Brandywine', 'Lunch', self.today)
-        self.brandywine['Dinner'] = _menu('Brandywine', 'Dinner', self.today)
-        self.brandywine['name'] = 'Brandywine'
-
+        self._fetch_from(self.brandywine, 'Brandywine')
+        self._fetch_from(self.anteatery, 'The Anteatery')
 
 def _menu(location, period='Lunch', menu_date=date.today().strftime('%m/%d/%Y')):
     return parse_menu(
