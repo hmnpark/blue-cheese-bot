@@ -13,14 +13,15 @@ COLORS = {
 REFRESH_TIME = 8
 
 
-def _make_embed(menu, period, date):
+def _make_embed(menu, period, date, exclusions):
     embed = discord.Embed(title=f'{menu.get("name")}',
                             description=f'{period} {date}',
                             color=COLORS[period])
     for k in menu.get(period):
-        if k not in EXCLUSIONS:
-            embed.add_field(name=k,
-                value=''.join([f'{food}\n' for food in menu.get(period).get(k)]),
+        if k not in exclusions:
+            embed.add_field(
+                name=k,
+                value=''.join([f'> • {food}\n' for food in menu.get(period).get(k)]),
                 inline=True)
     return embed
 
@@ -29,29 +30,48 @@ class MenuCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.menu = Menu()
-
-    @commands.command(name='breakfast')
-    async def _breakfast(self, ctx):
+    
+    def _menu_check(self):
         if self.menu.today != date.today().strftime('%m/%d/%Y') and date.now().hour >= REFRESH_TIME:
             self.menu.force_update_menu()
 
-        embed = _make_embed(self.menu.brandywine, 'Breakfast', self.menu.today)
+    @commands.command(name='breakfast')
+    async def _breakfast(self, ctx, *args):
+        self._menu_check()
+        if len(args) > 0 and args[0] == 'all':
+            exclusions = set()
+        else:
+            exclusions = EXCLUSIONS
+
+        embed = _make_embed(self.menu.brandywine, 'Breakfast', self.menu.today, exclusions)
         await ctx.send(embed=embed)
-        embed = _make_embed(self.menu.anteatery, 'Breakfast', self.menu.today)
+        embed = _make_embed(self.menu.anteatery, 'Breakfast', self.menu.today, exclusions)
         await ctx.send(embed=embed)
 
     @commands.command(name='lunch')
-    async def _lunch(self, ctx):
-        embed = _make_embed(self.menu.brandywine, 'Lunch', self.menu.today)
+    async def _lunch(self, ctx, *args):
+        self._menu_check()
+        if len(args) > 0 and args[0] == 'all':
+            exclusions = set()
+        else:
+            exclusions = EXCLUSIONS
+
+        embed = _make_embed(self.menu.brandywine, 'Lunch', self.menu.today, exclusions)
         await ctx.send(embed=embed)
-        embed = _make_embed(self.menu.anteatery, 'Lunch', self.menu.today)
+        embed = _make_embed(self.menu.anteatery, 'Lunch', self.menu.today, exclusions)
         await ctx.send(embed=embed)
 
     @commands.command(name='dinner')
-    async def _dinner(self, ctx):
-        embed = _make_embed(self.menu.brandywine, 'Dinner', self.menu.today)
+    async def _dinner(self, ctx, *args):
+        self._menu_check()
+        if len(args) > 0 and args[0] == 'all':
+            exclusions = set()
+        else:
+            exclusions = EXCLUSIONS
+
+        embed = _make_embed(self.menu.brandywine, 'Dinner', self.menu.today, exclusions)
         await ctx.send(embed=embed)
-        embed = _make_embed(self.menu.anteatery, 'Dinner', self.menu.today)
+        embed = _make_embed(self.menu.anteatery, 'Dinner', self.menu.today, exclusions)
         await ctx.send(embed=embed)
 
     @commands.command(name='refresh')
