@@ -20,8 +20,6 @@ class BotCog(commands.Cog, name='Bot'):
 
         if message.content.lower() == 'ping':
             await message.channel.send('pong')
-        
-        await self.bot.process_commands(message)
 
 
 async def setup(bot):
