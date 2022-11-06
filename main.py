@@ -11,7 +11,8 @@ OWNER_ID = os.environ['OWNER_ID']
 INITIAL_COGS = [
     'owner',
     'bot',
-    'menu'
+    'menu',
+    'notify'
 ]
 
 MONGODB_HOST = 'localhost'
@@ -19,7 +20,7 @@ MONGODB_PORT = 27017
 
 
 def _connect_to_db(bot):
-    bot.db = motor.AsyncIOMotorClient(MONGODB_HOST, MONGODB_PORT)
+    bot.db = motor.AsyncIOMotorClient(MONGODB_HOST, MONGODB_PORT)['blue_cheese_db']
     
 
 if __name__ == '__main__':
