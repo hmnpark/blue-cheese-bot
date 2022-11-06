@@ -1,17 +1,26 @@
 import discord
 from discord.ext import commands
 import asyncio
+import motor.motor_asyncio as motor
 from Menu.Menu import Menu
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-
-PRIVILEGED_IDS = {135960976863264770}
-OWNER_ID = 135960976863264770
+OWNER_ID = os.environ['OWNER_ID']
 INITIAL_COGS = [
     'owner',
     'bot',
     'menu'
 ]
 
+MONGODB_HOST = 'localhost'
+MONGODB_PORT = 27017
+
+
+def _connect_to_db(bot):
+    bot.db = motor.AsyncIOMotorClient(MONGODB_HOST, MONGODB_PORT)
+    
 
 if __name__ == '__main__':
     intents = discord.Intents.default()
@@ -24,10 +33,8 @@ if __name__ == '__main__':
         )
 
     bot.menu = Menu() 
-
+    _connect_to_db(bot)
     for cog in INITIAL_COGS:
         asyncio.run(bot.load_extension(f'cogs.{cog}'))
 
-    with open('token.txt') as fp:
-        TOKEN = fp.read()
-    bot.run(TOKEN)
+    bot.run(os.environ['TOKEN'])
