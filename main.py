@@ -29,7 +29,7 @@ if __name__ == '__main__':
     bot = commands.Bot(
         command_prefix='?',
         intents=intents,
-        owner_id=OWNER_ID
+        owner_id=int(OWNER_ID)
         )
 
     bot.menu = Menu() 
