@@ -14,9 +14,10 @@ REFRESH_TIME = 8
 
 
 class MenuCog(commands.Cog, name='Menu'):
+    bot: commands.Bot
+
     def __init__(self, bot):
         self.bot = bot
-        self.menu = Menu()
     
     @commands.command(name='breakfast')
     async def _breakfast(self, ctx, *args) -> None:
@@ -37,13 +38,13 @@ class MenuCog(commands.Cog, name='Menu'):
     @commands.is_owner()
     async def _refresh(self, ctx) -> None:
         """Refreshes the current menu"""
-        self.menu.force_update_menu()
+        self.bot.menu.force_update_menu()
         await ctx.send('Refreshed menu!')
 
     def _menu_check(self) -> None:
         """Updates the menu if the current date is different, and >= the refresh time (hour)"""
-        if self.menu.today != date.today().strftime('%m/%d/%Y') and date.now().hour >= REFRESH_TIME:
-            self.menu.force_update_menu()
+        if self.bot.menu.today != date.today().strftime('%m/%d/%Y') and date.now().hour >= REFRESH_TIME:
+            self.bot.menu.force_update_menu()
 
     async def _post_menu(self, ctx, args, period) -> None:
         """Posts the menu"""
@@ -53,9 +54,9 @@ class MenuCog(commands.Cog, name='Menu'):
         else:
             exclusions = EXCLUSIONS
 
-        embed = _make_embed(self.menu.brandywine, period, self.menu.today, exclusions)
+        embed = _make_embed(self.bot.menu.brandywine, period, self.bot.menu.today, exclusions)
         await ctx.send(embed=embed)
-        embed = _make_embed(self.menu.anteatery, period, self.menu.today, exclusions)
+        embed = _make_embed(self.bot.menu.anteatery, period, self.bot.menu.today, exclusions)
         await ctx.send(embed=embed)
 
 
