@@ -6,7 +6,7 @@ class OwnerCog(commands.Cog, name='Owner'):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(hidden=True, name='shutdown')
+    @commands.command(hidden=True, name='kill')
     @commands.is_owner()
     async def _shutdown(self, ctx):
         await ctx.send('sayonara')
@@ -15,7 +15,7 @@ class OwnerCog(commands.Cog, name='Owner'):
 
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def load(self, ctx, *, module : str):
+    async def _load(self, ctx, *, module : str):
         """Loads a module."""
         try:
             self.bot.load_extension(module)
@@ -28,7 +28,7 @@ class OwnerCog(commands.Cog, name='Owner'):
 
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def unload(self, ctx, *, module : str):
+    async def _unload(self, ctx, *, module : str):
         """Unloads a module."""
         try:
             self.bot.unload_extension(module)
