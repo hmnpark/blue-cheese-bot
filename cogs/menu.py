@@ -5,12 +5,17 @@ import datetime
 from datetime import datetime as dt
 
 
-EXCLUSIONS = {'The Farm Stand/ Salad Bar', 'Ember/Grill', "Farmer's Market", 'Sizzle Grill'}
+EXCLUSIONS = {
+    'The Farm Stand/ Salad Bar',
+    'Ember/Grill',
+    "Farmer's Market",
+    'Sizzle Grill'
+    }
 COLORS = {
     'Breakfast': 0xffe100,
     'Lunch': 0xff9800,
     'Dinner': 0x651ce3
-}
+    }
 REFRESH_HOUR_PST = 8
 TIMEZONE = datetime.timezone(-datetime.timedelta(hours=8))
 
@@ -44,7 +49,10 @@ class MenuCog(commands.Cog, name='Menu'):
         await ctx.send('Refreshed menu!')
 
     def _menu_check(self) -> None:
-        """Updates the menu if the current date is different, and >= the refresh time (hour)"""
+        """
+        Updates the menu if the current date is different,
+        and >= the refresh time (hour)
+        """
         cur_hour = dt.now().astimezone(tz=TIMEZONE).hour
         cur_day = dt.today().astimezone(tz=TIMEZONE).strftime('%m/%d/%Y')
 
@@ -59,22 +67,41 @@ class MenuCog(commands.Cog, name='Menu'):
         else:
             exclusions = EXCLUSIONS
 
-        embed = _make_embed(self.bot.menu.brandywine, period, self.bot.menu.today_as_str(), exclusions)
+        embed = _make_embed(
+            self.bot.menu.brandywine,
+            period,
+            self.bot.menu.today_as_str(),
+            exclusions,
+            self.bot.menu.time)
         await ctx.send(embed=embed)
-        embed = _make_embed(self.bot.menu.anteatery, period, self.bot.menu.today_as_str(), exclusions)
+        embed = _make_embed(
+            self.bot.menu.anteatery,
+            period,
+            self.bot.menu.today_as_str(),
+            exclusions,
+            self.bot.menu.time)
         await ctx.send(embed=embed)
 
 
-def _make_embed(menu: dict, period: str, date: str, exclusions: set) -> discord.Embed:
+def _make_embed(
+    menu: dict,
+    period: str,
+    date: str,
+    exclusions: set,
+    timestamp: dt
+    ) -> discord.Embed:
     """Get the menu as an embed"""
     embed = discord.Embed(title=f'{menu.get("name")}',
                             description=f'{period} {date}',
                             color=COLORS[period])
+    embed.timestamp = timestamp
     for k in menu.get(period):
         if k not in exclusions:
             embed.add_field(
                 name=k,
-                value=''.join([f'> • {food}\n' for food in menu.get(period).get(k)]),
+                value=''.join(
+                    [f'> • {food}\n' for food in menu.get(period).get(k)]
+                    ),
                 inline=True)
     return embed
 
