@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 from Menu.Menu import Menu
-from datetime import datetime
+import datetime
+from datetime import datetime as dt
 
 
 EXCLUSIONS = {'The Farm Stand/ Salad Bar', 'Ember/Grill', "Farmer's Market", 'Sizzle Grill'}
@@ -10,7 +11,8 @@ COLORS = {
     'Lunch': 0xff9800,
     'Dinner': 0x651ce3
 }
-REFRESH_TIME_UTC = 16
+REFRESH_HOUR_PST = 8
+TIMEZONE = datetime.timezone(-datetime.timedelta(hours=8))
 
 
 class MenuCog(commands.Cog, name='Menu'):
@@ -18,7 +20,7 @@ class MenuCog(commands.Cog, name='Menu'):
 
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name='breakfast')
     async def _breakfast(self, ctx, *args) -> None:
         """Gets the breakfast menu for today"""
@@ -43,7 +45,10 @@ class MenuCog(commands.Cog, name='Menu'):
 
     def _menu_check(self) -> None:
         """Updates the menu if the current date is different, and >= the refresh time (hour)"""
-        if self.bot.menu.today != datetime.today().strftime('%m/%d/%Y') and datetime.now().hour >= REFRESH_TIME_UTC:
+        cur_hour = dt.now().astimezone(tz=TIMEZONE).hour
+        cur_day = dt.today().astimezone(tz=TIMEZONE).strftime('%m/%d/%Y')
+
+        if self.bot.menu.today != cur_day and cur_hour >= REFRESH_HOUR_PST:
             self.bot.menu.force_update_menu()
 
     async def _post_menu(self, ctx, args, period) -> None:
