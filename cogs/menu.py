@@ -48,7 +48,7 @@ class MenuCog(commands.Cog, name='Menu'):
         cur_hour = dt.now().astimezone(tz=TIMEZONE).hour
         cur_day = dt.today().astimezone(tz=TIMEZONE).strftime('%m/%d/%Y')
 
-        if self.bot.menu.today != cur_day and cur_hour >= REFRESH_HOUR_PST:
+        if self.bot.menu.today_as_str() != cur_day and cur_hour >= REFRESH_HOUR_PST:
             self.bot.menu.force_update_menu()
 
     async def _post_menu(self, ctx, args, period) -> None:
@@ -59,9 +59,9 @@ class MenuCog(commands.Cog, name='Menu'):
         else:
             exclusions = EXCLUSIONS
 
-        embed = _make_embed(self.bot.menu.brandywine, period, self.bot.menu.today, exclusions)
+        embed = _make_embed(self.bot.menu.brandywine, period, self.bot.menu.today_as_str(), exclusions)
         await ctx.send(embed=embed)
-        embed = _make_embed(self.bot.menu.anteatery, period, self.bot.menu.today, exclusions)
+        embed = _make_embed(self.bot.menu.anteatery, period, self.bot.menu.today_as_str(), exclusions)
         await ctx.send(embed=embed)
 
 
