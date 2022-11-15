@@ -48,7 +48,7 @@ class MenuCog(commands.Cog, name='Menu'):
         self.bot.menu.force_update_menu()
         await ctx.send('Refreshed menu!')
 
-    def _menu_check(self) -> None:
+    def _menu_check(self, ctx) -> None:
         """
         Updates the menu if the current date is different,
         and >= the refresh time (hour)
@@ -57,11 +57,12 @@ class MenuCog(commands.Cog, name='Menu'):
         cur_day = dt.today().astimezone(tz=TIMEZONE).strftime('%m/%d/%Y')
 
         if self.bot.menu.today_as_str() != cur_day and cur_hour >= REFRESH_HOUR_PST:
+            ctx.send("One second, getting today's menu...")
             self.bot.menu.force_update_menu()
 
     async def _post_menu(self, ctx, args, period) -> None:
         """Posts the menu"""
-        self._menu_check()
+        self._menu_check(ctx)
         if len(args) > 0 and args[0] == 'all':
             exclusions = set()
         else:
