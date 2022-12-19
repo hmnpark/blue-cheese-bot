@@ -18,7 +18,7 @@ COLORS = {
     }
 REFRESH_HOUR_PST = 8
 TIMEZONE = datetime.timezone(-datetime.timedelta(hours=8))  # PST timezone
-MENU_UPDATE_TIMES_UTC = [
+MENU_UPDATE_TIMES_PT = [
     datetime.time(hour=7, tzinfo=TIMEZONE),
     datetime.time(hour=8, tzinfo=TIMEZONE),
     datetime.time(hour=9, tzinfo=TIMEZONE),
